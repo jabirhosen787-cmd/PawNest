@@ -1,52 +1,84 @@
-const products = [
-    {
-        name: "Mini Vacuum Cleaner",
-        image: "https://via.placeholder.com/300",
-        description: "Portable cleaner for keyboard, car and small spaces.",
-        link: "#"
-    },
+const productContainer = document.getElementById("product-container");
+const searchBox = document.getElementById("searchBox");
 
-    {
-        name: "Smart LED Light",
-        image: "https://via.placeholder.com/300",
-        description: "Create a better atmosphere with smart lighting.",
-        link: "#"
-    },
-
-    {
-        name: "Phone Stand",
-        image: "https://via.placeholder.com/300",
-        description: "Adjustable phone stand for desk and workspace.",
-        link: "#"
-    }
-];
+let allProducts = [];
 
 
-const container = document.getElementById("product-container");
+// Load Products
+
+fetch("products/products.json")
+.then(response => response.json())
+.then(products => {
+
+    allProducts = products;
+
+    displayProducts(allProducts);
+
+})
+.catch(error => {
+
+    console.log("Product loading error:", error);
+
+});
 
 
-products.forEach(product => {
 
-    const card = document.createElement("div");
 
-    card.innerHTML = `
-    
-    <div class="product-card">
+// Display Products
 
-        <img src="${product.image}">
+function displayProducts(products){
 
-        <h3>${product.name}</h3>
+    productContainer.innerHTML = "";
 
-        <p>${product.description}</p>
 
-        <a href="${product.link}">
-        Buy on Amazon
-        </a>
+    products.forEach(product => {
 
-    </div>
 
-    `;
+        const productCard = document.createElement("div");
 
-    container.appendChild(card);
+        productCard.className = "product-item";
+
+
+        productCard.innerHTML = `
+
+            <a href="${product.link}" target="_blank">
+
+                <img src="${product.image}" alt="${product.name}">
+
+                <h3>${product.name}</h3>
+
+            </a>
+
+        `;
+
+
+        productContainer.appendChild(productCard);
+
+
+    });
+
+
+}
+
+
+
+
+// Search Function
+
+searchBox.addEventListener("input", function(){
+
+
+    const searchText = this.value.toLowerCase();
+
+
+    const filteredProducts = allProducts.filter(product =>
+
+        product.name.toLowerCase().includes(searchText)
+
+    );
+
+
+    displayProducts(filteredProducts);
+
 
 });
